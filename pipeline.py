@@ -3,11 +3,33 @@ import pickle
 import string
 
 
-def IF(newCode):
-	return newCode
+def IF(newCode, num):
+	return newCode[num]
 
 def DE(line, lineNum):
 
+	line = line.replace('\t', '')
+	line = line.lstrip(' ') 
+
+	if line[0] == 'R':
+		line = line.replace('R', '')
+		register = int(line.split('=', 1)[0])
+		value = line.split('=', 1)[1]
+		R[register] = value
+	elif (line[0] == 'M') and (line[1] != 'U'):
+		line = line.replace('M', '')
+		register = int(line.split('=', 1)[0])
+		value = line.split('=', 1)[1]
+		R[register] = value
+
+
+
+
+
+	# for x in xrange(len(line)):
+	# 	if line[x] == 'R':
+	# 		field1 = line[x:x+1]
+	# 		print field1
 
 	return 0
 
@@ -24,8 +46,8 @@ def WB():
 
 code = [line for line in open('test2.txt')]
 
-R = []
-M = []
+R = [None]*100
+M = [None]*100
 function = []
 newCode = []
 
@@ -33,6 +55,7 @@ for string in code:
 	rest = string.split('//', 1)[0]
 	newCode.append(rest)
 
+newCode = filter(None, newCode)
 
 lineNum = 0
 for line in newCode:
@@ -44,8 +67,10 @@ for line in newCode:
 	        newCode[lineNum] = rest
 	lineNum += 1
 
-print newCode
+# print newCode
 
+number = 0
 for line in newCode:
-	line = IF(line)
-	instruction = DE(line, funcLine)
+	line = IF(newCode, number)
+	DE(line, funcLine)
+	number += 1
