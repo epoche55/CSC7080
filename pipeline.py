@@ -20,8 +20,9 @@ def DE(line, lineNum):
 		line = line.replace('M', '')
 		register = int(line.split('=', 1)[0])
 		value = line.split('=', 1)[1]
-		R[register] = value
-
+		M[register] = value
+	elif(line[0] == 'A') and (line[1] == 'D') and (line[2] == 'D') and (line[3] == 'I')
+	elif(line[0] == 'A') and (line[1] == 'D') and (line[2] == 'D')
 
 
 
@@ -31,7 +32,7 @@ def DE(line, lineNum):
 	# 		field1 = line[x:x+1]
 	# 		print field1
 
-	return 0
+	return line
 
 def ALU():
 	return 0
@@ -72,5 +73,10 @@ for line in newCode:
 number = 0
 for line in newCode:
 	line = IF(newCode, number)
-	DE(line, funcLine)
+	line = DE(line, funcLine)
+	print line
+
 	number += 1
+
+print R
+print M
