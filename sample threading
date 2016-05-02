@@ -1,0 +1,27 @@
+from multiprocessing import Process
+import sys
+
+rocket = 0
+
+def func1():
+    global rocket
+    print 'start func1'
+    while rocket < sys.maxint:
+        rocket += 1
+    print 'end func1'
+
+def func2():
+    global rocket
+    print 'start func2'
+    while rocket < sys.maxint:
+        rocket += 1
+    print 'end func2'
+
+if __name__=='__main__':
+     p1 = Process(target = func1)
+     p1.start()
+     p2 = Process(target = func2)
+     p2.start()
+You will see it print 'start func1' and then 'start func2' and then after a (very) long time you will finally see the functions end. But they will indeed execute simultaneously.
+
+Because processes take a while to start up, you may even see 'start func2' before 'start func1'.
