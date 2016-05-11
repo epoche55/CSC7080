@@ -5,6 +5,7 @@ import string
 dataforwarding = 0
 
 def IF(newCode, num):
+	## check if last line is reached
 	return newCode[num]
 
 def DE(instex, lineNum):
@@ -32,12 +33,13 @@ def DE(instex, lineNum):
 	arg2 = 0
 	arg3 = 0
 #### new stuff
+	
 	if len(instruction) > 0:
-		if (instruction[0] == "ADD"):
+		if (instruction[0] == "ADD"):		
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3].split('R', 1)[1])
-			print "adding"
+			
 			# R[arg1] = R[arg2] + R[arg3]
 			# temp = R[arg2] + R[arg3]
 			# dataforwarding = temp
@@ -221,7 +223,9 @@ def DE(instex, lineNum):
 				print "M[%d] : %d" % (arg1, M[arg1])
 			code = 24
 
-
+	if (code >= 1 and code <= 16):	
+		Rflag[arg1] = 1
+		print "Rflag = %s" % Rflag
 
 #########3
 	return (code, arg1, arg2, arg3)
@@ -312,7 +316,9 @@ def MEM(opcode, arg1, arg2, arg3, result):
 	if (opcode >= 1 and opcode <= 16):	
 		R[arg1] = result
 		dataforwarding = result
-	return 0
+		Rflag[arg1] = 0	
+		print "Rflag = %s" % Rflag
+	return (opcode, arg1, arg2, arg3, result)
 
 def WB(opcode, arg1, arg2, arg3, result):
 	# write to memory
@@ -326,9 +332,16 @@ def WB(opcode, arg1, arg2, arg3, result):
 
 code = [line for line in open('test2.txt')]
 
+
 R = [None]*100
 R[0] = 0
 M = [None]*100
+Rflag = [None]*100
+Mflag = [None]*100
+for i in xrange(0, len(Rflag)):
+    Rflag[i] = 0
+    Mflag[i] = 0
+
 function = []
 newCode = []
 
@@ -356,22 +369,133 @@ for line in newCode:
 
 number = 0
 clock = 0
+
+# 1
+line = IF(newCode, number)
+number += 1
+clock += 1
+
+# 2
+line2 = IF(newCode, number)
+opcode, arg1, arg2, arg3 = DE(line, funcLine)
+number += 1
+clock += 1
+
+# 3
+line3 = IF(newCode, number)
+opcode2, arg12, arg22, arg32 = DE(line2, funcLine)
+op, inst1, inst2, inst3, result, numJump = ALU(opcode, arg1, arg2, arg3, number)
+clock += 1
+if numJump != number:
+	number = numJump
+else:
+	number += 1
+
+# 4
+line = IF(newCode, number)
+opcode3, arg13, arg23, arg33 = DE(line3, funcLine)
+op2, inst12, inst22, inst32, result2, numJump = ALU(opcode2, arg12, arg22, arg32, number)
+MEMop, MEMarg1, MEMarg2, MEMarg3, MEMresult = MEM(op, inst1, inst2, inst3, result)
+clock += 1
+if numJump != number:
+	number = numJump
+else:
+	number += 1
+
 while number < len(newCode)-1:
-	print "clock: %d" % (clock)
-	line = IF(newCode, number)
-	print "code: %s" % line
-	opcode, arg1, arg2, arg3 = DE(line, funcLine)
-	opcode, arg1, arg2, arg3, result, numJump = ALU(opcode, arg1, arg2, arg3, number)
 
-
-	MEM(opcode, arg1, arg2, arg3, result)
-	WB(opcode, arg1, arg2, arg3, result)
+	# 1
+	line1 = IF(newCode, number)
+	DEop1, DEarg11, DEarg21, DEarg31 = DE(line, funcLine)
+	ALUop, ALUarg1, ALUarg2, ALUarg3, ALUresult, numJump = ALU(opcode3, arg13, arg23, arg33, number)
+	MEMop2, MEMarg12, MEMarg22, MEMarg32, MEMresult2 = MEM(op2, inst12, inst22, inst32, result2)
+	WB(MEMop, MEMarg1, MEMarg2, MEMarg3, MEMresult)
+	clock += 1
 	if numJump != number:
 		number = numJump
 	else:
 		number += 1
 
+
+
+	# 2
+	line2 = IF(newCode, number)
+	DEop2, DEarg12, DEarg22, DEarg32 = DE(line1, funcLine)
+	ALUop2, ALUarg12, ALUarg22, ALUarg32, ALUresult2, numJump = ALU(DEop1, DEarg11, DEarg21, DEarg31, number)
+	MEMop3, MEMarg13, MEMarg23, MEMarg33, MEMresult3 = MEM(ALUop, ALUarg1, ALUarg2, ALUarg3, ALUresult)
+	WB(MEMop2, MEMarg12, MEMarg22, MEMarg32, MEMresult2)
 	clock += 1
+	if numJump != number:
+		number = numJump
+	else:
+		number += 1
+
+	# 3
+	line3 = IF(newCode, number)
+	DEop3, DEarg13, DEarg23, DEarg33 = DE(line2, funcLine)
+	ALUop3, ALUarg13, ALUarg23, ALUarg33, ALUresult3, numJump = ALU(DEop2, DEarg12, DEarg22, DEarg32, number)
+	MEMop4, MEMarg14, MEMarg24, MEMarg34, MEMresult4 = MEM(ALUop2, ALUarg12, ALUarg22, ALUarg32, ALUresult2)
+	WB(MEMop3, MEMarg13, MEMarg23, MEMarg33, MEMresult3)
+	clock += 1
+	if numJump != number:
+		number = numJump
+	else:
+		number += 1
+
+	# 4
+	line4 = IF(newCode, number)
+	DEop4, DEarg14, DEarg24, DEarg34 = DE(line3, funcLine)
+	ALUop4, ALUarg14, ALUarg24, ALUarg34, ALUresult4, numJump = ALU(DEop3, DEarg13, DEarg23, DEarg33, number)
+	MEMop5, MEMarg15, MEMarg25, MEMarg35, MEMresult5 = MEM(ALUop3, ALUarg13, ALUarg23, ALUarg33, ALUresult3)
+	WB(MEMop4, MEMarg14, MEMarg24, MEMarg34, MEMresult4)
+	clock += 1
+	if numJump != number:
+		number = numJump
+	else:
+		number += 1
+
+
+	# 5
+	line = IF(newCode, number)
+	opcode3, arg13, arg23, arg33 = DE(line4, funcLine)
+	op2, inst12, inst22, inst32, result2, numJump = ALU(DEop4, DEarg14, DEarg24, DEarg34, number)
+	MEMop2, MEMarg12, MEMarg22, MEMarg32, MEMresult2 = MEM(ALUop4, ALUarg14, ALUarg24, ALUarg34, ALUresult4)
+	WB(MEMop5, MEMarg15, MEMarg25, MEMarg35, MEMresult5)
+	clock += 1
+	if numJump != number:
+		number = numJump
+	else:
+		number += 1
+
+
+
+	# ## first stage
+	# print "clock: %d" % (clock)
+	# line = IF(newCode, number)
+	
+	# print "code: %s" % line
+
+
+	# # second stage
+	# opcode, arg1, arg2, arg3 = DE(line, funcLine)
+	# line2 = IF(newCode, number+1)
+	
+	# # third stage
+	# opcode, arg1, arg2, arg3, result, numJump = ALU(opcode, arg1, arg2, arg3, number)
+	# line3 = IF(newCode, number+2)
+
+	# # fourth stage
+	# MEM(opcode, arg1, arg2, arg3, result)
+	# line4 = IF(newCode, number+3)
+
+	# # fifth stage
+	# WB(opcode, arg1, arg2, arg3, result)
+	# line5 = IF(newCode, number+4)
+	
+	# clock += 1
+
+
+
 
 print 
 print "R"
