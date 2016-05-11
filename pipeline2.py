@@ -43,11 +43,11 @@ def DE(instex, lineNum):
 			arg3 = int(instruction[3].split('R', 1)[1])
 			
 			if Rflag[arg1] == 1:
-				print "Hazard for R[%d]" % arg1
+				print "WAW for R[%d]" % arg1
 			if Rflag[arg2] == 1:
-				print "Hazard for R[%d]" % arg2
-			if Rflag[arg2] == 1:
-				print "Hazard for R[%d]" % arg3
+				print "RAW for R[%d]" % arg2
+			if Rflag[arg3] == 1:
+				print "RAW for R[%d]" % arg3
 
 			# R[arg1] = R[arg2] + R[arg3]
 			# temp = R[arg2] + R[arg3]
@@ -57,6 +57,11 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
+
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 			# temp = R[arg2] + arg3
 			# R[arg1] = R[arg2] + arg3
 			code = 2
@@ -65,6 +70,12 @@ def DE(instex, lineNum):
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3].split('R', 1)[1])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+			if Rflag[arg3] == 1:
+				print "RAW for R[%d]" % arg3
 			# temp = R[arg2] - R[arg3]
 			# M[arg1] = R[arg2] - R[arg3]
 			code = 3
@@ -72,6 +83,11 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
+
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 			# temp = R[arg2] - arg3
 			
 			# R[arg1] = R[arg2] - arg3
@@ -81,6 +97,12 @@ def DE(instex, lineNum):
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3].split('R', 1)[1])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+			if Rflag[arg3] == 1:
+				print "RAW for R[%d]" % arg3
 			# temp = R[arg2] * R[arg3]
 			# R[arg1] = R[arg2] * R[arg3]
 			code = 5
@@ -88,6 +110,11 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
+
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 			# temp = R[arg2] * arg3
 			# R[arg1] = R[arg2] * arg3
 			code = 6
@@ -96,6 +123,12 @@ def DE(instex, lineNum):
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3].split('R', 1)[1])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+			if Rflag[arg3] == 1:
+				print "RAW for R[%d]" % arg3
 			# temp = R[arg2] / R[arg3]
 			# R[arg1] = R[arg2] / R[arg3]
 			code = 7
@@ -103,6 +136,11 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
+
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 			# temp = R[arg2] / arg3
 			# R[arg1] = R[arg2] / arg3
 			code = 8
@@ -111,6 +149,12 @@ def DE(instex, lineNum):
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3].split('R', 1)[1])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+			if Rflag[arg3] == 1:
+				print "RAW for R[%d]" % arg3
 			# temp = R[arg2] and R[arg3]
 			# R[arg1] = R[arg2] and R[arg3]
 			code = 9
@@ -118,6 +162,11 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
+
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 			# temp = R[arg2] and arg3
 			# R[arg1] = R[arg2] and arg3
 			code = 10
@@ -126,6 +175,12 @@ def DE(instex, lineNum):
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3].split('R', 1)[1])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+			if Rflag[arg3] == 1:
+				print "RAW for R[%d]" % arg3
 			# temp = R[arg2] or R[arg3]
 			# R[arg1] = R[arg2] or R[arg3]
 			code = 11
@@ -134,6 +189,11 @@ def DE(instex, lineNum):
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+
 			# temp = R[arg2] or arg3
 			# R[arg1] = R[arg2] or arg3
 			code = 12
@@ -141,6 +201,10 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 			# temp = ~R[arg2] 
 			# R[arg1] = ~R[arg2] 
 			code = 13
@@ -148,12 +212,20 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+
 			# temp = ~arg2
 			# R[arg1] = ~arg2
 			code = 14
 		elif (instruction[0] == "LD"):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
+
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 
 			# temp =M[R[arg2]]  
 			# R[arg1] = M[R[arg2]] 
@@ -163,12 +235,23 @@ def DE(instex, lineNum):
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
 
+			if Rflag[arg1] == 1:
+				print "WAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+
 			# temp = M[R[arg2]+arg3]
 			# R[arg1] = M[R[arg2]+arg3]
 			code = 16
 		elif (instruction[0] == "ST"):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
+
+			if Rflag[arg1] == 1:
+				print "RAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
+
 			# temp = R[arg1]
 			# M[R[arg2]] = R[arg1]
 			code = 17
@@ -176,35 +259,52 @@ def DE(instex, lineNum):
 			arg1 = int(instruction[1].split('R', 1)[1])
 			arg2 = int(instruction[2].split('R', 1)[1])
 			arg3 = int(instruction[3])
+
+			if Rflag[arg1] == 1:
+				print "RAW for R[%d]" % arg1
+			if Rflag[arg2] == 1:
+				print "RAW for R[%d]" % arg2
 			# temp = R[arg1]
 			# M[R[arg2] + arg3] = R[arg1]
 			code = 18
 		elif (instruction[0] == "BRZ"):
 			arg1 = int(instruction[1].split('R', 1)[1])
+
+			if Rflag[arg1] == 1:
+				print "RAW for R[%d]" % arg1
 			###arg2 = int(instruction[2])
 			# if R[arg1] == 0:
 			# 	number = funcLine
 			code = 19
 		elif (instruction[0] == "BRNZ"):
 			arg1 = int(instruction[1].split('R', 1)[1])
+
+			if Rflag[arg1] == 1:
+				print "RAW for R[%d]" % arg1
 			###arg2 = int(instruction[2])
 			# if R[arg1] != 0: 
 			# 	number = funcLine
 			code = 20 
 		elif (instruction[0] == "BRG"):
 			arg1 = int(instruction[1].split('R', 1)[1])
+			if Rflag[arg1] == 1:
+				print "RAW for R[%d]" % arg1
 			####arg2 = int(instruction[2])
 			# if R[arg1] > 0: 
 			# 	number = int(instruction[2])
 			code = 21
 		elif (instruction[0] == "BRL"):
 			arg1 = int(instruction[1].split('R', 1)[1])
+			if Rflag[arg1] == 1:
+				print "RAW for R[%d]" % arg1
 			####arg2 = int(instruction[2])
 			# if R[arg1] < 0: 
 			# 	number = int(instruction[2])
 			code = 22
 		elif (instruction[0] == "JMP"):
 			arg1 = int(instruction[1])
+			if Rflag[arg1] == 1:
+				print "RAW for R[%d]" % arg1
 			# number = int(instruction[1])
 			code = 23
 		elif (instruction[0] == "PRINT"):
