@@ -439,7 +439,7 @@ def WB(opcode, arg1, arg2, arg3, result):
 	return 0
 
 
-cache = [line for line in open('test2.txt')]
+code = [line for line in open('test2.txt')]
 
 
 R = [None]*100
@@ -457,12 +457,10 @@ function = []
 newCode = []
 
 
-print "R"
-print R
-print "M"
-print M
+print "R = %s" % R
+print "M = %s" % M
 
-for string in cache:
+for string in code:
 	rest = string.split('//', 1)[0]
 	newCode.append(rest)
 
@@ -618,10 +616,8 @@ while number < len(newCode)-1:
 
 
 print 
-print "R"
-print R
-print "M"
-print M
+print "R = %s" % R
+print "M = %s" % M
 
 # for line in newCode:
 # for number in range(0, len(newCode)-1):
