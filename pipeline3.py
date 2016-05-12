@@ -11,7 +11,7 @@ def IF(newCode, num):
 	return newCode[num]
 
 def DE(instex, lineNum):
-
+	# parse instructions
 	instex = instex.replace('\t', '')
 	instex = instex.lstrip(' ') 
 
@@ -27,14 +27,14 @@ def DE(instex, lineNum):
 		register = int(instex.split('=', 1)[0])
 		value = int(instex.split('=', 1)[1])
 		M[register] = value
-	
+
+	#split instruction into list	
 	instruction = instex.split()
-	# print instruction
+
 	code = 0
 	arg1 = 0
 	arg2 = 0
 	arg3 = 0
-#### new stuff
 	
 	if len(instruction) > 0:
 		if (instruction[0] == "ADD"):		
@@ -336,7 +336,6 @@ def DE(instex, lineNum):
 		Rflag[arg1] = 1
 		# print "Rflag = %s" % Rflag
 
-#########3
 	return (code, arg1, arg2, arg3)
 
 def ALU(opcode, arg1, arg2, arg3, number, dataforwarding):
@@ -419,23 +418,49 @@ def ALU(opcode, arg1, arg2, arg3, number, dataforwarding):
 		dataforwarding = result
 		# R[arg1] = R[arg2] / arg3
 	elif (opcode == 9):		# AND
-		result = R[arg2] and R[arg3]
+		if Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			result = dataforwarding and R[arg3]
+		elif Rflag[arg3] == 1:
+			print "ALU RAW for R[%d]" % arg3
+			result =  R[arg2] and dataforwarding
+		else:
+			result = R[arg2] and R[arg3]
 		dataforwarding = result
 		# R[arg1] = R[arg2] and R[arg3]
 	elif (opcode == 10):		# ANDI
-		result = R[arg2] and arg3
+		if Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			result = dataforwarding and R[arg3]
+		else:
+			result = R[arg2] and arg3
 		dataforwarding = result
 		# R[arg1] = R[arg2] and arg3
 	elif (opcode == 11):	# OR
-		result = R[arg2] or R[arg3]
+		if Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			result = dataforwarding or R[arg3]
+		elif Rflag[arg3] == 1:
+			print "ALU RAW for R[%d]" % arg3
+			result =  R[arg2] or dataforwarding
+		else:
+			result = R[arg2] or R[arg3]
 		dataforwarding = result
 		# R[arg1] = R[arg2] or R[arg3]
 	elif (opcode == 12):		# ORI
-		result = R[arg2] or arg3
+		if Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			result = dataforwarding or R[arg3]
+		else:
+			result = R[arg2] or arg3
 		dataforwarding = result
 		# R[arg1] = R[arg2] or arg3
 	elif (opcode == 13):		# NOT
-		result = ~R[arg2] 
+		if Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			result = ~dataforwarding
+		else:
+			result = ~R[arg2] 
 		dataforwarding = result
 		# R[arg1] = ~R[arg2] 
 	elif (opcode == 14):		# NOTI
@@ -443,37 +468,79 @@ def ALU(opcode, arg1, arg2, arg3, number, dataforwarding):
 		dataforwarding = result
 		# R[arg1] = ~arg2
 	elif (opcode == 15):		# LD
-		result =M[R[arg2]]  
+		if Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			result = M[R[dataforwarding]]
+		else:
+			result =M[R[arg2]]  
 		dataforwarding = result
 		# R[arg1] = M[R[arg2]] 
 	elif (opcode == 16):		# LDI
-		result = M[R[arg2]+arg3]
+		if Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			result = M[R[dataforwarding]+arg3]
+		else:
+			result = M[R[arg2]+arg3]
 		dataforwarding = result
 		# R[arg1] = M[R[arg2]+arg3]
 	elif (opcode == 17):	# ST
+		
+		if Rflag[arg1] == 1:
+			print "ALU RAW for R[%d]" % arg1
+			M[R[arg2]] = R[dataforwarding]
+		elif Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			M[R[dataforwarding]] = R[arg1]
+		else:
+			M[R[arg2]] = R[arg1]
 		# result = R[arg1]
-		M[R[arg2]] = R[arg1]
 	elif (opcode == 18):	# STI
+		if Rflag[arg1] == 1:
+			print "ALU RAW for R[%d]" % arg1
+			M[R[arg2] + arg3] = R[dataforwarding]
+		elif Rflag[arg2] == 1:
+			print "ALU RAW for R[%d]" % arg2
+			M[R[dataforwarding] + arg3] = R[arg1]
+		else:
+			M[R[arg2] + arg3] = R[arg1]
 		# result = R[arg1]
-		M[R[arg2] + arg3] = R[arg1]
 	elif (opcode == 19):		# BRZ
-		if R[arg1] == 0:
-			number = funcLine
+		if Rflag[arg1] == 1:
+			if R[dataforwarding] == 0:
+				number = funcLine
+		else:
+			if R[arg1] == 0:
+				number = funcLine
 			# result = funcLine
 	elif (opcode == 20):		# BRNZ
-		if R[arg1] != 0: 
-			number = funcLine
+		if Rflag[arg1] == 1:
+			if R[dataforwarding] != 0:
+				number = funcLine
+		else:
+			if R[arg1] != 0:
+				number = funcLine
 			# result = funcLine
 	elif (opcode == 21):		# BRG
-		if R[arg1] > 0: 
-			number = funcLine
+		if Rflag[arg1] == 1:
+			if R[dataforwarding] > 0:
+				number = funcLine
+		else:
+			if R[arg1] > 0:
+				number = funcLine
 			# result = funcLine
 	elif (opcode == 22):		# BRL
-		if R[arg1] < 0: 
-			number = funcLine
+		if Rflag[arg1] == 1:
+			if R[dataforwarding] < 0:
+				number = funcLine
+		else:
+			if R[arg1] < 0:
+				number = funcLine
 			# result = funcLine
 	elif (opcode == 23):		# JMP
-		number = arg1
+		if Rflag[arg1] == 1:
+			number = dataforwarding
+		else:
+			number = arg1
 		# result = arg1
 	print "R = %s" % R
 	return (opcode, arg1, arg2, arg3, result, number, dataforwarding)
@@ -494,7 +561,6 @@ def WB(opcode, arg1, arg2, arg3, result):
 		M[R[arg2]] = result
 	elif (opcode == 18):	# STI
 		M[R[arg2] + arg3] = result
-
 	return 0
 
 
@@ -514,7 +580,6 @@ for i in xrange(0, len(Rflag)):
 
 function = []
 newCode = []
-
 
 print "R = %s" % R
 print "M = %s" % M
@@ -539,6 +604,7 @@ number = 0
 clock = 0
 ALUdf = dataforwarding
 
+#begin pipeline
 # 1
 line = IF(newCode, number)
 number += 1
@@ -576,7 +642,6 @@ else:
 print "clock = %d" % clock
 
 while number < len(newCode)-1:
-
 	# 1
 	line1 = IF(newCode, number)
 	DEop1, DEarg11, DEarg21, DEarg31 = DE(line, funcLine)
@@ -589,8 +654,6 @@ while number < len(newCode)-1:
 	else:
 		number += 1
 	print "clock = %d" % clock	
-
-
 
 	# 2
 	line2 = IF(newCode, number)
@@ -630,8 +693,7 @@ while number < len(newCode)-1:
 	else:
 		number += 1
 	print "clock = %d" % clock
-
-
+	
 	# 5
 	line = IF(newCode, number)
 	opcode3, arg13, arg23, arg33 = DE(line4, funcLine)
@@ -645,74 +707,6 @@ while number < len(newCode)-1:
 		number += 1
 	print "clock = %d" % clock
 
-
-
-	# ## first stage
-	# print "clock: %d" % (clock)
-	# line = IF(newCode, number)
-	
-	# print "code: %s" % line
-
-
-	# # second stage
-	# opcode, arg1, arg2, arg3 = DE(line, funcLine)
-	# line2 = IF(newCode, number+1)
-	
-	# # third stage
-	# opcode, arg1, arg2, arg3, result, numJump = ALU(opcode, arg1, arg2, arg3, number)
-	# line3 = IF(newCode, number+2)
-
-	# # fourth stage
-	# MEM(opcode, arg1, arg2, arg3, result)
-	# line4 = IF(newCode, number+3)
-
-	# # fifth stage
-	# WB(opcode, arg1, arg2, arg3, result)
-	# line5 = IF(newCode, number+4)
-	
-	# clock += 1
-
-
-
-
 print 
 print "R = %s" % R
 print "M = %s" % M
-
-# for line in newCode:
-# for number in range(0, len(newCode)-1):
-# 	print number
-# 	line = IF(newCode, number)
-# 	inst = DE(line, funcLine)
-# 	aluResult, regResult = ALU(inst)
-# 	MEM(aluResult, regResult)
-# 	number += 1
-
-# start pipeline
-# number = 0
-# newCode[number] = IF(newCode, number)
-
-# number += 1
-# newCode[number] = IF(newCode, number)
-# inst = DE(newCode[number-1], funcLine)
-
-# number += 1
-# newCode[number] = IF(newCode, number)
-# inst = DE(newCode[number-1], funcLine)
-# aluResult, regResult = ALU(inst)
-
-# number += 1
-# newCode[number] = IF(newCode, number)
-# inst = DE(newCode[number-1], funcLine)
-# aluResult, regResult = ALU(inst)
-# MEM(aluResult, regResult)
-
- 
-# for x in range(number, len(newCode)-1):
-# 	newCode[x] = IF(newCode, x)
-# 	inst = DE(newCode[x-1], funcLine)
-# 	aluResult, regResult = ALU(inst)
-# 	MEM(aluResult, regResult)
-
-# 	number += 1
-
