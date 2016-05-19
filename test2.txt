@@ -1,0 +1,9 @@
+R1 = 10         	//compute the factorial of R1
+R2 = 1			//store the factorial in R2
+//Main code
+        ADD  R3 R1 R0   //Load the value of R1 to R3
+Loop: 	MUL  R2 R2 R3	  //multiply R2 and R3
+	    SUBI  R3 R3 1   // decrease R3
+      	BRNZ  R3 Loop    //continue iteration if the loop counter != 0
+//print results
+PRINT  R1-R2			//show the contents of R1 and R2

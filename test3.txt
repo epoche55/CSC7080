@@ -1,0 +1,15 @@
+R1 = 10
+R2 = 20
+R3 = 30
+M[1] = 110
+M[2] = 10
+//Main code
+Loop: ST R1 R2 //store to M[R2] the contents of R1
+SUBI  R1 R1 1
+ADDI  R2 R2 1
+BRNZ  R1 Loop //if R1 is not 0 then loop
+//print results
+PRINT  R3
+PRINT  M[0-39]  //show the contents of M[0] to M[99]
+PRINT  R0-R31  //show the contents of R1 to R31
+PRINT  M[2]
